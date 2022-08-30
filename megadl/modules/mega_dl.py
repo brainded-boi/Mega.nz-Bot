@@ -70,15 +70,17 @@ def split_files(input_file, out_path):
 async def megadl_megapy(_, message: Message):
     # To use bot private or public
     try:
-        if not Config.IS_PUBLIC_BOT:
-            if message.from_user.id not in Config.AUTH_USERS:
-                return await message.reply_text("**Sorry this bot isn't a Public Bot 🥺! But You can make your own bot ☺️, Click on Below Button!**", reply_markup=GITHUB_REPO)
+        if (
+            not Config.IS_PUBLIC_BOT
+            and message.from_user.id not in Config.AUTH_USERS
+        ):
+            return await message.reply_text("**Sorry this bot isn't a Public Bot 🥺! But You can make your own bot ☺️, Click on Below Button!**", reply_markup=GITHUB_REPO)
     except Exception as e:
         return await send_errors(e=e)
     url = message.text
     userpath = str(message.from_user.id)
     the_chat_id = str(message.chat.id)
-    megadl_path = basedir + "/" + userpath
+    megadl_path = f"{basedir}/{userpath}"
     # Temp fix for the https://github.com/Itz-fork/Mega.nz-Bot/issues/11
     if os.path.isdir(megadl_path):
         return await message.reply_text("`Already One Process is Going On. Please wait until it's finished!`")
@@ -94,19 +96,17 @@ async def megadl_megapy(_, message: Message):
     except Exception as e:
         if os.path.isdir(megadl_path):
             await download_msg.edit(f"**Error:** `{e}`")
-            shutil.rmtree(basedir + "/" + userpath)
+            shutil.rmtree(f"{basedir}/{userpath}")
             await send_errors(e)
         return
     # If user cancelled the process bot will return into telegram again lmao
     if os.path.isdir(megadl_path) is False:
         return
-    else:
-        pass
     try:
         for mg_file in folder_f:
             file_size = os.stat(megadl_path).st_size
             if file_size > Config.TG_MAX_SIZE:
-                base_splt_out_dir = megadl_path + "splitted_files"
+                base_splt_out_dir = f"{megadl_path}splitted_files"
                 await download_msg.edit("`Large File Detected, Trying to split it!`")
                 loop = get_running_loop()
                 await loop.run_in_executor(None, partial(split_files(input_file=mg_file, out_base_path=base_splt_out_dir)))
@@ -119,7 +119,7 @@ async def megadl_megapy(_, message: Message):
         await download_msg.edit(f"**Error:** \n`{e}`")
         await send_errors(e)
     try:
-        shutil.rmtree(basedir + "/" + userpath)
+        shutil.rmtree(f"{basedir}/{userpath}")
         print("Successfully Removed Downloaded File and the folder!")
     except Exception as e:
         return await send_errors(e)
@@ -130,9 +130,11 @@ async def megadl_megapy(_, message: Message):
 async def megadl_megatools(_, message: Message):
     # To use bot private or public
     try:
-        if not Config.IS_PUBLIC_BOT:
-            if message.from_user.id not in Config.AUTH_USERS:
-                return await message.reply_text("**Sorry this bot isn't a Public Bot 🥺! But You can make your own bot ☺️, Click on Below Button!**", reply_markup=GITHUB_REPO)
+        if (
+            not Config.IS_PUBLIC_BOT
+            and message.from_user.id not in Config.AUTH_USERS
+        ):
+            return await message.reply_text("**Sorry this bot isn't a Public Bot 🥺! But You can make your own bot ☺️, Click on Below Button!**", reply_markup=GITHUB_REPO)
     except Exception as e:
         return await send_errors(e)
     url = message.text.split(None, 1)[1]
@@ -140,7 +142,7 @@ async def megadl_megatools(_, message: Message):
         return await message.reply("`This isn't a mega url!`")
     userpath = str(message.from_user.id)
     the_chat_id = str(message.chat.id)
-    megadl_path = basedir + "/" + userpath
+    megadl_path = f"{basedir}/{userpath}"
     # Temp fix for the https://github.com/Itz-fork/Mega.nz-Bot/issues/11
     if os.path.isdir(megadl_path):
         return await message.reply_text("`Already One Process is Going On. Please wait until it's finished!`")
@@ -155,14 +157,14 @@ async def megadl_megatools(_, message: Message):
     except Exception as e:
         if os.path.isdir(megadl_path):
             await download_msg.edit(f"**Error:** `{e}`")
-            shutil.rmtree(basedir + "/" + userpath)
+            shutil.rmtree(f"{basedir}/{userpath}")
             await send_errors(e)
         return
     try:
         for mg_file in dl_files:
             file_size = os.stat(megadl_path).st_size
             if file_size > Config.TG_MAX_SIZE:
-                base_splt_out_dir = megadl_path + "splitted_files"
+                base_splt_out_dir = f"{megadl_path}splitted_files"
                 await download_msg.edit("`Large File Detected, Trying to split it!`")
                 loop = get_running_loop()
                 await loop.run_in_executor(None, partial(split_files(input_file=mg_file, out_base_path=base_splt_out_dir)))
@@ -176,7 +178,7 @@ async def megadl_megatools(_, message: Message):
         await download_msg.edit(f"**Error:** \n`{e}`")
         await send_errors(e)
     try:
-        shutil.rmtree(basedir + "/" + userpath)
+        shutil.rmtree(f"{basedir}/{userpath}")
         print("Successfully Removed Downloaded File and the folder!")
     except Exception as e:
         await send_errors(e)

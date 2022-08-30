@@ -30,9 +30,11 @@ async def progress_for_pyrogram(
         estimated_total_time = TimeFormatter(milliseconds=estimated_total_time)
 
         progress = "[{0}{1}] \n**Process**: {2}%\n".format(
-            ''.join(["█" for i in range(math.floor(percentage / 5))]),
-            ''.join(["░" for i in range(20 - math.floor(percentage / 5))]),
-            round(percentage, 2))
+            ''.join(["█" for _ in range(math.floor(percentage / 5))]),
+            ''.join(["░" for _ in range(20 - math.floor(percentage / 5))]),
+            round(percentage, 2),
+        )
+
 
         tmp = progress + "{0} of {1}\n**Speed:** {2}/s\n**ETA:** {3}\n".format(
             humanbytes(current),
@@ -42,11 +44,9 @@ async def progress_for_pyrogram(
         )
         try:
             await message.edit(
-                text="{}\n {} \n\n**Powered by @NexaBotsUpdates**".format(
-                    ud_type,
-                    tmp
-                )
+                text=f"{ud_type}\n {tmp} \n\n**Powered by @NexaBotsUpdates**"
             )
+
         except:
             pass
 
@@ -62,19 +62,22 @@ def humanbytes(size):
     while size > power:
         size /= power
         n += 1
-    return str(round(size, 2)) + " " + Dic_powerN[n] + 'B'
+    return f"{str(round(size, 2))} {Dic_powerN[n]}B"
 
 
 def TimeFormatter(milliseconds: int) -> str:
-    seconds, milliseconds = divmod(int(milliseconds), 1000)
+    seconds, milliseconds = divmod(milliseconds, 1000)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
-    tmp = ((str(days) + "d, ") if days else "") + \
-        ((str(hours) + "h, ") if hours else "") + \
-        ((str(minutes) + "m, ") if minutes else "") + \
-        ((str(seconds) + "s, ") if seconds else "") + \
-        ((str(milliseconds) + "ms, ") if milliseconds else "")
+    tmp = (
+        (f"{str(days)}d, " if days else "")
+        + (f"{str(hours)}h, " if hours else "")
+        + (f"{str(minutes)}m, " if minutes else "")
+        + (f"{str(seconds)}s, " if seconds else "")
+        + (f"{str(milliseconds)}ms, " if milliseconds else "")
+    )
+
     return tmp[:-2]
 
 
@@ -92,7 +95,6 @@ def check_logs():
             client.send_message(chat_id=Config.LOGS_CHANNEL, text="`Mega.nz-Bot has Successfully Started!` \n\n**Powered by @NexaBotsUpdates**")
     else:
         print("No Log Channel ID is Given. Anyway I'm Trying to Start!")
-        pass
 
 
 # Send Download or Upload logs in log channel
@@ -113,11 +115,10 @@ async def send_logs(user_id, mchat_id, up_file=None, mega_url=None, download_log
                     await gib_details.reply_text(f"**#UPLOAD_LOG** \n\n**User ID:** `{user_id}` \n**Chat ID:** `{mchat_id}`")
                 elif mega_url is not None:
                     await client.send_message(chat_id=Config.LOGS_CHANNEL, text=f"**#UPLOAD_LOG** \n\n**User ID:** `{user_id}` \n**Chat ID:** `{mchat_id}` \n**Url:** {mega_url}")
-            else:
-                if up_file is not None:
-                    print(f"UPLOAD_LOG \nUser ID: {user_id} \n\nChat ID: {mchat_id}")
-                elif mega_url is not None:
-                    print(f"UPLOAD_LOG \nUser ID: {user_id} \n\nChat ID: {mchat_id} \nUrl: {mega_url}")
+            elif up_file is not None:
+                print(f"UPLOAD_LOG \nUser ID: {user_id} \n\nChat ID: {mchat_id}")
+            elif mega_url is not None:
+                print(f"UPLOAD_LOG \nUser ID: {user_id} \n\nChat ID: {mchat_id} \nUrl: {mega_url}")
         except Exception as e:
             await send_errors(e=e)
     elif import_logs is True:

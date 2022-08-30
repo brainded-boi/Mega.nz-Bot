@@ -47,18 +47,15 @@ SpeedLimit = {sp_limit}
 [Upload]
 CreatePreviews = false
 """
-        f = open(self.config, "w+")
-        f.write(conf_temp)
-        f.close()
+        with open(self.config, "w+") as f:
+            f.write(conf_temp)
 
 
     async def __runCommands(self, cmd):
         run = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         shell_ouput = run.stdout.read()[:-1].decode("utf-8")
         cc = await self.__checkErrors(shell_ouput)
-        if cc == "retry":
-            return await self.__runCommands(cmd)
-        return shell_ouput
+        return await self.__runCommands(cmd) if cc == "retry" else shell_ouput
     
 
     async def __genErrorMsg(self, bs):
