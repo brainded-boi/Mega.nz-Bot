@@ -12,8 +12,7 @@ from megadl import meganzbot as Client
 
 async def run_shell_cmds(command):
     run = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    shell_ouput = run.stdout.read()[:-1].decode("utf-8")
-    return shell_ouput
+    return run.stdout.read()[:-1].decode("utf-8")
 
 async def get_vid_duration(input_video):
     result = await run_shell_cmds(f"ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {input_video}")

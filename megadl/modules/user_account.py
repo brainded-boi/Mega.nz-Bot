@@ -82,14 +82,13 @@ async def uptomega(client: Client, message: Message):
       url = todownfile.text
       if os.path.isdir(direct_link_path):
         return await megauplaod_msg.edit("`Already One Process is Going On. Please wait until it's finished!`")
-      else:
-        os.makedirs(direct_link_path)
-        megaupmsg = await megauplaod_msg.edit("**Starting to Download The Content to My Server! This may take while 😴**")
-        send_logs(user_id=the_uid, mchat_id=the_cid, mega_url=url, upload_logs=True)
-        toupload = wget.download(url, out=direct_link_path)
-        link = await mcli.upload(toupload)
-        await megaupmsg.edit(f"**Successfully Uploaded To Mega.nz** \n\n**Link:** `{link}` \n\n**Powered by @NexaBotsUpdates**", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("📥 Mega.nz Link 📥", url=f"{link}")]]))
-        os.remove(toupload)
+      os.makedirs(direct_link_path)
+      megaupmsg = await megauplaod_msg.edit("**Starting to Download The Content to My Server! This may take while 😴**")
+      send_logs(user_id=the_uid, mchat_id=the_cid, mega_url=url, upload_logs=True)
+      toupload = wget.download(url, out=direct_link_path)
+      link = await mcli.upload(toupload)
+      await megaupmsg.edit(f"**Successfully Uploaded To Mega.nz** \n\n**Link:** `{link}` \n\n**Powered by @NexaBotsUpdates**", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("📥 Mega.nz Link 📥", url=f"{link}")]]))
+      os.remove(toupload)
       return
     except Exception as e:
       return await send_errors(e)

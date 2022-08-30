@@ -150,23 +150,20 @@ async def meganz_cb(megabot: Client, query: CallbackQuery):
 
     elif query.data == "meganzdownloadercb":
         user_id = query.from_user.id
-        if not Config.IS_PUBLIC_BOT:
-            if user_id not in Config.AUTH_USERS:
-                return await query.answer("Sorry This Bot is a Private Bot 😔! \n\nJoin @NexaBotsUpdates to Make your own bot!", show_alert=True)
+        if not Config.IS_PUBLIC_BOT and user_id not in Config.AUTH_USERS:
+            return await query.answer("Sorry This Bot is a Private Bot 😔! \n\nJoin @NexaBotsUpdates to Make your own bot!", show_alert=True)
         await query.edit_message_text(await get_msg("dl"), reply_markup=await get_buttons("mod_help"))
 
     elif query.data == "meganzuploadercb":
         user_id = query.from_user.id
-        if not Config.IS_PUBLIC_BOT:
-            if user_id not in Config.AUTH_USERS:
-                return await query.answer("Sorry This Bot is a Private Bot 😔! \n\nJoin @NexaBotsUpdates to Make your own bot!", show_alert=True)
+        if not Config.IS_PUBLIC_BOT and user_id not in Config.AUTH_USERS:
+            return await query.answer("Sorry This Bot is a Private Bot 😔! \n\nJoin @NexaBotsUpdates to Make your own bot!", show_alert=True)
         await query.edit_message_text(await get_msg("up"), reply_markup=await get_buttons("mod_help"))
 
     elif query.data == "meganzimportercb":
         user_id = query.from_user.id
-        if not Config.IS_PUBLIC_BOT:
-            if user_id not in Config.AUTH_USERS:
-                return await query.answer("Sorry This Bot is a Private Bot 😔! \n\nJoin @NexaBotsUpdates to Make your own bot!", show_alert=True)
+        if not Config.IS_PUBLIC_BOT and user_id not in Config.AUTH_USERS:
+            return await query.answer("Sorry This Bot is a Private Bot 😔! \n\nJoin @NexaBotsUpdates to Make your own bot!", show_alert=True)
         await query.edit_message_text(await get_msg("import"), reply_markup=await get_buttons("mod_help"))
 
     elif query.data == "aboutcallback":
@@ -184,7 +181,7 @@ async def meganz_cb(megabot: Client, query: CallbackQuery):
     elif query.data == "cancelvro":
         userpath = str(query.from_user.id)
         try:
-            shutil.rmtree(basedir + "/" + userpath)
+            shutil.rmtree(f"{basedir}/{userpath}")
             await query.message.delete()
             await query.message.reply_text("`Process Cancelled by User`")
         except Exception as e:
@@ -195,7 +192,7 @@ async def meganz_cb(megabot: Client, query: CallbackQuery):
             await query.message.delete()
             await query.answer(f"Closed Help Menu of @{(await megabot.get_me()).username}")
         except:
-            await query.answer(f"Can't Close Via Inline Messages!")
+            await query.answer("Can't Close Via Inline Messages!")
 
 # Start message
 

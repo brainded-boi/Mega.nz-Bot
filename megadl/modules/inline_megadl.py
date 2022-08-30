@@ -53,27 +53,30 @@ async def inline_megadl(client, query):
                 switch_pm_parameter="inline",
                 cache_time=15)
             return
-        
+
         elif megadl_q.split()[0] == "details":
-            inline_down_butotns = []
-            if not Config.IS_PUBLIC_BOT:
-                if query.from_user.id not in Config.AUTH_USERS:
-                    await client.answer_inline_query(
-                        query.id,
-                        results=answers,
-                        switch_pm_text=f"Only Admins Can Use Bot's Inline Dwonload Mode!",
-                        switch_pm_parameter="inline",
-                        cache_time=10)
-                    return
-            else:
-                pass
+            if (
+                not Config.IS_PUBLIC_BOT
+                and query.from_user.id not in Config.AUTH_USERS
+            ):
+                await client.answer_inline_query(
+                    query.id,
+                    results=answers,
+                    switch_pm_text="Only Admins Can Use Bot's Inline Dwonload Mode!",
+                    switch_pm_parameter="inline",
+                    cache_time=10,
+                )
+
+                return
             if len(megadl_q.split()) < 2:
                 await client.answer_inline_query(
-                query.id,
-                results=answers,
-                switch_pm_text=f"Usage: your_mega_link_here",
-                switch_pm_parameter="inline",
-                cache_time=10)
+                    query.id,
+                    results=answers,
+                    switch_pm_text="Usage: your_mega_link_here",
+                    switch_pm_parameter="inline",
+                    cache_time=10,
+                )
+
                 return
             # Getting file size before download
             try:
@@ -104,7 +107,7 @@ async def inline_megadl(client, query):
 **Powered by @NexaBotsUpdates**
 """
             d_inline_keyborad = [InlineKeyboardButton("PM Mega.nz-Bot", url=f"https://t.me/{(await client.get_me()).username}")]
-            inline_down_butotns.append(d_inline_keyborad)
+            inline_down_butotns = [d_inline_keyborad]
             INLINE_DWN_B = InlineKeyboardMarkup(inline_down_butotns)
             answers.append(
                 InlineQueryResultArticle(
@@ -120,23 +123,27 @@ async def inline_megadl(client, query):
                 switch_pm_text=f"@{(await client.get_me()).username}'s Inline Functions!",
                 switch_pm_parameter="inline",
                 cache_time=20)
-        
+
         elif megadl_q.split()[0] == "info":
             if query.from_user.id not in Config.AUTH_USERS:
                 await client.answer_inline_query(
-                query.id,
-                results=answers,
-                switch_pm_text=f"Not Authorized to Use This Bot!",
-                switch_pm_parameter="inline",
-                cache_time=10)
+                    query.id,
+                    results=answers,
+                    switch_pm_text="Not Authorized to Use This Bot!",
+                    switch_pm_parameter="inline",
+                    cache_time=10,
+                )
+
                 return
             if not Config.MEGA_EMAIL or not Config.MEGA_PASSWORD:
                 await client.answer_inline_query(
-                query.id,
-                results=answers,
-                switch_pm_text=f"Setup an User Account to Use this Feature!",
-                switch_pm_parameter="inline",
-                cache_time=10)
+                    query.id,
+                    results=answers,
+                    switch_pm_text="Setup an User Account to Use this Feature!",
+                    switch_pm_parameter="inline",
+                    cache_time=10,
+                )
+
                 return
             loop = get_running_loop()
             inf = await loop.run_in_executor(None, partial(USER_ACC_INFO))
@@ -157,8 +164,10 @@ async def inline_megadl(client, query):
             await client.answer_inline_query(
                 query.id,
                 results=answers,
-                switch_pm_text=f"No Result! Go ahead and learn how to use this",
+                switch_pm_text="No Result! Go ahead and learn how to use this",
                 switch_pm_parameter="inline",
-                cache_time=10)
+                cache_time=10,
+            )
+
     except Exception as e:
         await send_errors(e)
